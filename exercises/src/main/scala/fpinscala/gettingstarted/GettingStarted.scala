@@ -180,5 +180,5 @@ object PolymorphicFunctions {
 
   // Exercise 5: Implement `compose`
 
-  def compose[A,B,C](f: B => C, g: A => B): A => C = g.andThen(f)
+  def compose[A,B,C](f: B => C, g: A => B): A => C = x => f(g(x))
 }
