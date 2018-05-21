@@ -50,19 +50,67 @@ object List { // `List` companion object. Contains functions for creating and wo
     foldRight(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
 
 
-  def tail[A](l: List[A]): List[A] = ???
+  def tail[A](l: List[A]): List[A] = l match {
+    case Cons(_, t) => t
+    case Nil => Nil
+  }
 
-  def setHead[A](l: List[A], h: A): List[A] = ???
+  def setHead[A](l: List[A], h: A): List[A] = l match{
+    case Cons(_, t) => Cons(h, t)
+    case Nil => Nil
+  }
 
-  def drop[A](l: List[A], n: Int): List[A] = ???
+  def drop[A](l: List[A], n: Int): List[A] = l match {
+    case Cons(_, t) if n > 0 => drop(t, n-1)
+    case _ => l
+  }
 
-  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = ???
+  def main(args: Array[String]): Unit = {
+    val l =  List(1,2,3)
+    println(tail(l))
+    println(drop(l, 4))
+    println(drop(l, 3))
+    println(drop(l, 2))
+    println(drop(l, 0))
+    println(init(l))
+    println(init(Nil))
+    println(init(List(1)))
+    println(foldLeft(l, 0)(_+_))
+    println(lengthViaFoldLeft(l))
+    println(reverse(l))
+  }
 
-  def init[A](l: List[A]): List[A] = ???
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
+    case Cons(h, t) if f(h) => dropWhile(t, f)
+    case _ => l
+  }
 
-  def length[A](l: List[A]): Int = ???
+  def init[A](l: List[A]): List[A] = l match{
+    case Nil => Nil
+    case Cons(h, Nil) => Nil
+    case Cons(h, t) => Cons(h, init(t))
+  }
 
-  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???
+  def length[A](l: List[A]): Int = l match {
+    case Nil => 0
+    case Cons(_, t) => 1 + length(t)
+  }
+
+  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = l match {
+    case Nil => z
+    case Cons(h, t) => foldLeft(t,f(z, h))(f)
+  }
+
+  def sumViaFoldLeft(ns: List[Int]): Int = foldLeft(ns, 0)(_+_)
+
+  def productViaFoldLeft(ns: List[Int]): Int = foldLeft(ns, 1)(_*_)
+
+  def reverse(ns: List[Int]): List[Int] = foldLeft(ns, Nil:List[Int])((a,b) => Cons(b,a))
+
+  def foldLeftViaFoldRight[A,B](ns: List[A], z: B)(f: (B, A)=>B): B =
+
+  def lengthViaFoldLeft[A](l: List[A]): Int = foldLeft(l, 0)((a, _) => a + 1)
+
 
   def map[A,B](l: List[A])(f: A => B): List[B] = ???
 }
